@@ -32,4 +32,4 @@ See `LICENSE.txt` in the repository root for license details.
 
 If you want changes (different message patterns, localization, or a safer confirm flow), open an issue or submit a pull request.
 
-#SkurwysynskyCorp
+# #SkurwysynskyCorp
