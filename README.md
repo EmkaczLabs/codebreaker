@@ -12,10 +12,12 @@ Codebreaker listens for chat and server/game messages and attempts to extract ve
 ## Features
 
 - Detects codes in both player chat and server/game announcement messages.
-- Command `/ck` sends the detected code (client-side). Use `/ck cancel` to clear the pending code.
-- Heuristics tuned for announcement formats like: "Konkurs » Osoba ktora przepisze najszybciej kod: 123456789... uzywajac: /kod (kod)".
+- Client command `/ck` sends the detected code (client-side). Use `/ck cancel` to clear the pending code.
+- New subcommand `/ck cooldown` shows the current send cooldown; use `/ck cooldown <seconds>` to change it at runtime.
+- Heuristics tuned for announcement formats like:
+  `Konkurs » Osoba ktora przepisze najszybciej kod: 123456789... uzywajac: /kod (kod)`
 - Debugging mode prints helpful logs to the dev-run console to aid regex tuning.
-- Default safety: automatic sending is disabled. For contest announcements, the mod may force-send immediately to avoid sending after a winner message (this behavior is conservative and guarded).
+- Default safety: automatic sending is disabled (AUTO_SEND = false). For contest announcements the mod will detect and (optionally) auto-send conservatively; a resend guard prevents duplicate quick sends.
 
 ## Build
 
@@ -39,26 +41,27 @@ gradle runClient
    - `[Codebreaker] Detected code: <code>. Type /ck to send.` (requires you to run `/ck` to confirm), or
    - `[Codebreaker] Detected code (game msg): <code> — auto-sending` and the code will be sent automatically for contest-style announcements.
 4. To manually send a pending code, type `/ck` in chat. To cancel a pending code use `/ck cancel`.
+5. To view or change the cooldown at runtime use `/ck cooldown` or `/ck cooldown <seconds>`.
+
+## Configuration and flags
+
+- `AUTO_SEND` (boolean, default `false`) — if `true` the mod sends detected codes automatically; default is `false` for safety.
+- `DEBUG_CONSOLE` (boolean, default `true`) — if `true` the dev-run console receives logs about incoming messages and which extraction branch matched.
+- `SEND_COOLDOWN_MS` (default `5000`) — cooldown between sending the same code (ms). Change at runtime with `/ck cooldown <seconds>` or programmatically with `setSendCooldownMillis(long ms)`.
 
 ## Debugging / Tuning
 
 - The code detection lives in `src/client/java/pl/emkacz/codebreaker/client/CodebreakerClient.java`.
-- Two flags control behavior in that file:
-  - `AUTO_SEND` (boolean) — if `true` the mod sends detected codes automatically (default in this repo: `false`).
-  - `DEBUG_CONSOLE` (boolean) — if `true` the dev-run console receives logs about incoming messages and which extraction branch matched (default: `true` in dev).
 - If detection fails, enable `DEBUG_CONSOLE`, reproduce the announcement, and copy the console output + any in-chat `[Codebreaker][DEBUG] Raw message: ...` lines into an issue so the regex can be tuned.
-
-## Regex / Heuristics
-
-Codebreaker prefers to extract digits that appear after the token `kod` or immediately before the token `uzywaj`, and falls back to a longest standalone digit group. It also avoids matching digit groups embedded in letters (for example `I914900K`). These heuristics are conservative to reduce false positives.
+- The extractor prefers digits after `kod` or immediately before `uzywaj`, otherwise it picks the longest standalone digit group while avoiding digits embedded in letters.
 
 ## Safety & Server Rules
 
-This tool is intended for educational use (learning Fabric modding, practicing message parsing). Do not use it to gain unfair advantage or to violate server rules. The author assumes no responsibility for misuse — respect server TOS and community rules on `craftplay.pl` and any other server.
+This tool is intended for educational use (learning Fabric modding, practicing message parsing). Do not use it to gain unfair advantage or to violate server rules. Respect server TOS and community rules on `craftplay.pl` and any other server.
 
 ## Contributing
 
-If you want the regex tuned, a different notification method, or extra features (logging to file, localization), open an issue or send a PR. Keep changes small and include tests or sample announcement strings for validation.
+If you want the regex tuned, a different notification method, or extra features (logging to file, localization, persistence of settings), open an issue or send a PR. Include sample announcement strings for validation.
 
 ## License
 

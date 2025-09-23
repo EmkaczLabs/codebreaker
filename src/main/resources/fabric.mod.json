@@ -3,9 +3,12 @@
   "id": "codebreaker",
   "version": "${version}",
   "name": "codebreaker",
-  "description": "",
-  "authors": [],
-  "contact": {},
+  "description": "AutoCode for CraftPlay.pl | created by: emkacz",
+  "authors": ["emkacz"],
+  "contact": {
+    "homepage": "https://github.com/EmkaczLabs/codebreaker",
+    "sources": "https://github.com/EmkaczLabs/codebreaker"
+  },
   "license": "All-Rights-Reserved",
   "icon": "assets/codebreaker/icon.png",
   "environment": "client",
