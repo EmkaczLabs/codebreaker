@@ -1,3 +1,5 @@
+<img src="src/main/resources/assets/codebreaker/icon.png" alt="Codebreaker icon" width="64" height="64">
+
 # Codebreaker
 
 A small Fabric client-side mod that detects contest verification codes announced on a server and helps (optionally) send them back to the server.
